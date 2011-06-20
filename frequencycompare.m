@@ -16,7 +16,7 @@ darmoffset = 10e-12;
 
 % get measurement data
 
-datadir = '/home/nicolas/ligo/eligomeasurements/DCnoisecouplings/freq/2010-10-07';
+datadir = '/home/nicolas/ligo/eligomeasurements/DCnoisecouplings/freq/H1/2010-10-07';
 thisdir = pwd;
 
 cd(datadir)
