@@ -1,6 +1,9 @@
 % sets up environment for lentickle
 
-LENTICKLE_PATH = pwd();
+% find out the path of this .m file
+s = dbstack('-completenames');
+[LENTICKLE_PATH, ~, ~] = fileparts(s(1).file);
+addpath(LENTICKLE_PATH);
 
 % How to do package management in Matlab?
 %
