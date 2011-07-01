@@ -12,6 +12,7 @@ function lentickle = lentickleEligo(opt,darmsensor, ifo)
 
 if ~exist('ifo', 'var'),
     ifo = 'H1';  % default interferometer
+    warning('lentickleEligo: defaulting to H1 interferometer');
 end
 
 % optickle probe serial numbers of relevant sensors
@@ -141,23 +142,28 @@ switch ifo
         % a screen-shot of the L1 LSC screen during low noise mode.
         pfilt = readFilterFile('eligomeasurements/filters/L1/L1LSC.txt');
         
-        [z, p, k] = sos2zp(vertcat(pfilt.DARM([1,2,3,4,5,9]).soscoef), 1);
-        sys = zpk(z, p, k, 1/pfilt.DARM(1).fs);
-        sys = d2c(sys, 'tustin');
-        pp.ctrlDARM = filtZPK(cell2mat(sys.z)/(-2*pi), ...
-                              cell2mat(sys.p)/(-2*pi), sys.k);
+        % These are the filter modules that are enabled in low-noise mode:
+        foton.DARM = [1,2,3,4,5,9];
+        foton.MICH = [1,2,3,7,8];
+        foton.PRC  = [1,2,3,4,5,10];        
         
-        [z, p, k] = sos2zp(vertcat(pfilt.MICH([1,2,3,7,8]).soscoef), 1);
-        sys = zpk(z, p, k, 1/pfilt.DARM(1).fs);
-        sys = d2c(sys, 'tustin');
-        pp.ctrlMICH = filtZPK(cell2mat(sys.z)/(-2*pi), ...
-                              cell2mat(sys.p)/(-2*pi), sys.k);
+        my_fields = fieldnames(foton);
         
-        [z, p, k] = sos2zp(vertcat(pfilt.PRC([1,2,3,4,5,10]).soscoef), 1);
-        sys = zpk(z, p, k, 1/pfilt.DARM(1).fs);
-        sys = d2c(sys, 'tustin');
-        pp.ctrlPRC = filtZPK(cell2mat(sys.z)/(-2*pi), ...
-                             cell2mat(sys.p)/(-2*pi), sys.k);        
+        for i=1:numel(my_fields),
+            name = my_fields{i};
+            modules = foton.(name);
+            
+            % Extract the right SOSes and convert to ZPK:
+            [z, p, k] = sos2zp(vertcat(pfilt.(name)(modules).soscoef), 1);
+            sys = zpk(z, p, k, 1/pfilt.DARM(1).fs);
+            
+            % Convert from the z-domain to the s-domain:
+            sys = d2c(sys, 'tustin');
+            
+            % Stick it in a MEvans filter struct:
+            pp.(['ctrl' name])  = filtZPK(cell2mat(sys.z)/(-2*pi), ...
+                cell2mat(sys.p)/(-2*pi), sys.k);
+        end
         
     case 'H1',
         
