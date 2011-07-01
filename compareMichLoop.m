@@ -1,4 +1,4 @@
-%% Compare measured and modeled DARM open loop gain (OLG)
+%% Compare measured and modeled MICH open loop gain (OLG)
 
 %% Run Lentickle
 setupLentickle;
@@ -8,15 +8,20 @@ f = logspace(log10(20),log10(8000), 201).';
 inPower = 10;
 darmoffset = 10e-12;
 
-rslt = getEligoResults(f,inPower,darmoffset);
+rslt = getEligoResults(f,inPower,darmoffset, 'OMC', 'L1');
 
 %% Read a measurement
 
-data = dlmread('eligomeasurements/loops/L1/mich_loop_gain_lownoise_Aug07.txt');
-
-msmt = struct('f', [], 'H', []);
-msmt.f = data(:,1);
-msmt.H = data(:,2) + 1i*data(:,3);
+switch ifo
+    case 'H1',
+        error('No H1 MICH measurement');
+    case 'L1',
+        data = dlmread('eligomeasurements/loops/L1/mich_loop_gain_lownoise_Aug07.txt');
+        
+        msmt = struct('f', [], 'H', []);
+        msmt.f = data(:,1);
+        msmt.H = data(:,2) + 1i*data(:,3);
+end
 
 %% Plot them together
 

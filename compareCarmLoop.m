@@ -1,4 +1,4 @@
-%% Compare measured and modeled DARM open loop gain (OLG)
+%% Compare measured and modeled CARM open loop gain (OLG)
 
 %% Run Lentickle
 setupLentickle;
@@ -8,12 +8,17 @@ f = logspace(log10(20),log10(100e3), 201).';
 inPower = 10;
 darmoffset = 10e-12;
 
-rslt = getEligoResults(f,inPower,darmoffset);
+rslt = getEligoResults(f,inPower,darmoffset, 'OMC', ifo);
 
 %% Read a measurement
 
-fn = 'eligomeasurements/DCnoisecouplings/freq/L1/2010-06-02/CM000.ASC';
-data = textread(fn, '', 'headerlines', 17);
+switch ifo
+    case 'H1'
+        error('No H1 CM OLG measurement');
+    case 'L1'
+        fn = 'eligomeasurements/DCnoisecouplings/freq/L1/2010-06-02/CM000.ASC';
+        data = textread(fn, '', 'headerlines', 17);
+end
 
 msmt.f = data(:,1);
 msmt.H = (10.^(data(:,2)/20)) .* exp(1i*data(:,3)*pi/180);

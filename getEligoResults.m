@@ -1,5 +1,5 @@
 function [results,opt,lentickle]...
-                        = getEligoResults(f,inPower,DARMoffset,DARMsens)
+                        = getEligoResults(f,inPower,DARMoffset,DARMsens, ifo)
     % produces an eLIGO lentickle results structure
     %
     % results = getEligoResults(inPower,DARMoffset,DARMsens)
@@ -8,7 +8,19 @@ function [results,opt,lentickle]...
         DARMsens = 'omc';
     end
     
-    par = paramH1;
+    if nargin < 5
+        ifo = 'H1';
+    end    
+    
+    switch ifo
+        case 'H1'
+            par = paramH1;
+        case 'L1'
+            par = paramL1;
+        otherwise
+            error('unknown ifo');
+    end
+    
     par = setPower(par,inPower);
     par = paramEligo_00(par);
     opt = optEligo(par);
@@ -22,7 +34,7 @@ function [results,opt,lentickle]...
     
     opt = phaseEligo(opt,posOffset);
     
-    lentickle = lentickleEligo(opt,DARMsens);
+    lentickle = lentickleEligo(opt, DARMsens, ifo);
     % tickle
     %[fDC,sigDC,sigAC,mMech] = tickle(lentickle.opt,posOffset,f);     
     
