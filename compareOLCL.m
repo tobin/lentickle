@@ -10,10 +10,10 @@ rslt = getEligoResults(f, inPower, offset, 'OMC', ifo);
 
 %%
 couplings = [...
-    struct('drive', 'AM',         'name', 'Laser Amplitude Noise'), ...
-    struct('drive', 'PM',         'name', 'Laser Phase Noise'), ...
-    struct('drive', 'Mod1.amp',   'name', 'Oscillator Amplitude Noise'),...
-    struct('drive', 'Mod1.phase', 'name', 'Oscillator Phase Noise') ];
+    struct('drive', 'AM',         'name', 'Laser Amplitude Noise',      'loop',  []), ...
+    struct('drive', 'PM',         'name', 'Laser Phase Noise',          'loop', 'CM'), ...
+    struct('drive', 'Mod1.amp',   'name', 'Oscillator Amplitude Noise', 'loop',  []),...
+    struct('drive', 'Mod1.phase', 'name', 'Oscillator Phase Noise',     'loop',  [])];
 
 DARM_to_OMC_OL = pickleTF(rslt, 'EX', 'OMC_PD', 'OL') ...
                 -pickleTF(rslt, 'EY', 'OMC_PD', 'OL');
@@ -28,11 +28,17 @@ for ii=1:length(couplings),
     subplot(2,2,ii);
     coupling = couplings(ii);
     
+    if isempty(coupling.loop)
+        CLG = 1;
+    else
+        CLG = pickleTF(rslt, coupling.loop, coupling.loop, 'CL');
+    end
+    
     Noise_to_OMC_OL = pickleTF(rslt, coupling.drive, 'OMC_PD', 'OL');
     Noise_to_OMC_CL = pickleTF(rslt, coupling.drive, 'OMC_PD', 'CL');
 
     loglog(f, abs(Noise_to_OMC_OL ./ DARM_to_OMC_OL), ...
-           f, abs(Noise_to_OMC_CL ./ DARM_to_OMC_CL));
+           f, abs(Noise_to_OMC_CL ./ DARM_to_OMC_CL ./ CLG));
     
     title(coupling.name);
     ylabel(['meters per ' coupling.drive]);
