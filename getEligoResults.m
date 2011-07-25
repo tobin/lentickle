@@ -7,9 +7,15 @@ function [results,opt,lentickle]...
     if nargin < 4 % default DARMsens value
         DARMsens = 'omc';
     end
+    if DARMoffset == 0
+        DARMsens = 'asq';
+        warning('zero DARM offset --> using RF detection');
+        DARMoffset = 0.1e-12; % RMS
+    end
     
     if nargin < 5
         ifo = 'H1';
+        warning('getEligoResults: defaulting to H1 interferometer');
     end    
     
     switch ifo
@@ -35,10 +41,19 @@ function [results,opt,lentickle]...
     opt = phaseEligo(opt,posOffset);
     
     lentickle = lentickleEligo(opt, DARMsens, ifo);
-    % tickle
-    %[fDC,sigDC,sigAC,mMech] = tickle(lentickle.opt,posOffset,f);     
     
     % get loop calculations
-    results = lentickleEngine(lentickle,posOffset,f);%,sigAC,mMech);
+    results = lentickleEngine(lentickle,posOffset,f);
+    results.f = f;
     
+    % decorate the result so we know where it came from
+    metadata = struct();
+    metadata.x0 = DARMoffset;
+    metadata.DARMsense = DARMsens;
+    metadata.ifo = ifo;
+    
+    results.metadata = metadata;
+    results.lentickle = lentickle;
+    results.opt = opt;
+    results.ifo = ifo;    
 end

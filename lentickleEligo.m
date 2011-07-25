@@ -143,14 +143,14 @@ switch ifo
         pfilt = readFilterFile('eligomeasurements/filters/L1/L1LSC.txt');
         
         % These are the filter modules that are enabled in low-noise mode:
-        foton.DARM = [1,2,3,4,5,9];
-        foton.MICH = [1,2,3,7,8];
-        foton.PRC  = [1,2,3,4,5,10];        
+        foton.DARM = [1:5,9];
+        foton.MICH = [1:3,7,8];
+        foton.PRC  = [1:5,10];        
         
         my_fields = fieldnames(foton);
         
-        for i=1:numel(my_fields),
-            name = my_fields{i};
+        for ii=1:numel(my_fields),
+            name = my_fields{ii};
             modules = foton.(name);
             
             % Extract the right SOSes and convert to ZPK:
@@ -233,3 +233,4 @@ pp.mirrFilt = [pp.unityFilt,pp.unityFilt,pp.unityFilt,pp.unityFilt,...
 % Put opt and all the parameters in lentickle
 lentickle.param = pp;
 lentickle.opt = opt; 
+lentickle.ifo = ifo;

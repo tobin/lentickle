@@ -31,7 +31,7 @@ olg = 1 - 1./clg;
 subplot(2,1,1);
 semilogx(f, db(olg), '-', msmt.f, db(msmt.H), '.-');  
 legend('model', 'measurement');
-title('MICH OLG');
+title([ifo 'MICH OLG']);
 ylabel('dB');
 subplot(2,1,2);
 semilogx(f, angle(olg)*180/pi, '-', msmt.f, angle(msmt.H)*180/pi, '.-');
@@ -39,4 +39,4 @@ set(gca,'YTick', 45*(-4:4));
 ylabel('degrees');
 xlabel('Hz');
 
-print -dpdf compareMichLoopL1.pdf
+print(gcf, '-dpdf', ['compareMichLoop' ifo '.pdf']);

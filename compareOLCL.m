@@ -1,14 +1,7 @@
-function compareOLCL(ifo)
+function compareOLCL(rslt, ifo)
 %% Compare Open-Loop and Closed-Loop couplings
 % See the effect of cross-couplings.
 
-inPower = 10;
-offset  = 10e-12;
-
-f = logspace(log10(1), log10(8000), 301);
-rslt = getEligoResults(f, inPower, offset, 'OMC', ifo);
-
-%%
 couplings = [...
     struct('drive', 'AM',         'name', 'Laser Amplitude Noise',      'loop',  []), ...
     struct('drive', 'PM',         'name', 'Laser Phase Noise',          'loop', 'CM'), ...
@@ -37,8 +30,8 @@ for ii=1:length(couplings),
     Noise_to_OMC_OL = pickleTF(rslt, coupling.drive, 'OMC_PD', 'OL');
     Noise_to_OMC_CL = pickleTF(rslt, coupling.drive, 'OMC_PD', 'CL');
 
-    loglog(f, abs(Noise_to_OMC_OL ./ DARM_to_OMC_OL), ...
-           f, abs(Noise_to_OMC_CL ./ DARM_to_OMC_CL ./ CLG));
+    loglog(rslt.f, abs(Noise_to_OMC_OL ./ DARM_to_OMC_OL), ...
+           rslt.f, abs(Noise_to_OMC_CL ./ DARM_to_OMC_CL ./ CLG));
     
     title(coupling.name);
     ylabel(['meters per ' coupling.drive]);
