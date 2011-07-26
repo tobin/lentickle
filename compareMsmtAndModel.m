@@ -12,24 +12,25 @@ mk_coupling = @(name, title, drive, drive_calib, unit, loop) ...
     struct('name', name, 'title', title, 'drive', drive, ...
            'drive_calib', drive_calib, 'unit', unit, 'loop', loop);
 
-% phase(t) = omega * t + m_phase(t)      PM
-% phase(t) = omega * t + m_freq(t) * t   FM
-%
-% phase(t) = omega * t + (d/dt)(m_phase)(t) * t
-%
-% m_phase(t) = m Sin[2 pi f t]
-%
-% phase(t) = omega * t + m (2 pi f) Sin[2 pi f t] t 
+% pull the modulation depth out of the optickle model:
+gamma = imag(get(getOptic(rslts(1).opt, 'Mod1'), 'aMod'));
 
 % functions to calibrate Lentickle drives into what we want       
 AM_to_RIN = @(f) 2*ones(size(f));  % AM * 2     = RIN
 PM_to_HZ  = @(f) - 1i * f;         % PM * (f/i) = FM
+
+% SB RIN = 2 Γ₀ J₁'(Γ₀) / J₁(Γ₀) * OSC AM  [ http://goo.gl/QlAJ2 ]
+OSCAM_to_SBRIN = @(f)  2 * gamma * ...
+    (1/2)*(besselj(0,gamma) - besselj(2,gamma)) / besselj(1,gamma);
+clear gamma;
+
 no_calib  = @(f) ones(size(f));
 
+% nice structure describing the couplings:
 couplings = [...
     mk_coupling('laserAM', 'Laser Amplitude Noise',      'AM',          AM_to_RIN, 'RIN',     []), ...
     mk_coupling('laserFM', 'Laser Frequency Noise',      'PM',          PM_to_HZ,  'HZ',     'CM'), ...
-    mk_coupling('oscAM',   'Oscillator Amplitude Noise', 'Mod1.amp',    no_calib,  'SB RIN',  []), ...
+    mk_coupling('oscAM',   'Oscillator Amplitude Noise', 'Mod1.amp',    OSCAM_to_SBRIN,  'SB RIN',  []), ...
     mk_coupling('oscPM',   'Oscillator Phase Noise',     'Mod1.phase',  no_calib,  'radian',  [])];
 
 clf;
