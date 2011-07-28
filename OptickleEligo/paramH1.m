@@ -85,7 +85,7 @@ par.iI = par.mass * par.iTM;       % moment of mirrors
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input Beam Parameters
 par.Pin = 27.5;                    % input power (W) - P_laser*T_PMC*T_MC*T_FI
-f1 = 24485446;                     % first modulation frequency
+f1 = (3/4) * c / lPRC;             % first modulation frequency
 f2 = 5/2*f1;                       % second modulation frequency
 Nmod1 = 1;		           % first modulation order
 Nmod2 = 1;		           % second modulation order
