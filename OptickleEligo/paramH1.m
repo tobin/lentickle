@@ -18,12 +18,11 @@ par.Length.EX = 3995.032;          % length [m] of the X arm
 par.Length.EY = 3995.001;          % length [m] of the Y arm
 par.Length.PR = lPRC - lmean;      % distance from PR to BS
 
-% Radius of Curvature [m]
-% http://www.ligo.caltech.edu/~gari/COCAsBuilt.htm
+% Radius of Curvature [m]            from http://www.ligo.caltech.edu/~gari/COCAsBuilt.htm
 par.IX.ROC = 13.91e3;
 par.IY.ROC = 13.6e3;
-par.EX.ROC = 7.26e3;
-par.EY.ROC = 7.32e3;
+par.EX.ROC =  7.26e3;
+par.EY.ROC =  7.32e3;
 par.BS.ROC = 336e3;
 par.PR.ROC = 14.4e3;
 
@@ -69,8 +68,8 @@ par.BS.L = 100e-6;
 par.PR.L = 100e-6;
 
 % mechanical parameters
-par.w = 2 * pi * 0.75;             % resonance frequency mirror (rad/s)
-par.mass  = 10.5;                  % mass mirror (kg)
+par.w = 2 * pi * 0.75;             % resonance frequency of the mirror (rad/s)
+par.mass  = 10.5;                  % mass of the mirror (kg)
 
 par.w_pit = 2 * pi * 0.5;          % pitch mode resonance frequency
 
@@ -106,7 +105,7 @@ par.Laser.vArf = vArf;
 par.Laser.Power = par.Pin;
 par.Laser.Wavelength = lambda;
 
-par.ASsplit = 0.01;                % How much power goes to the AS_Q
+par.ASsplit = 1 - 0.953;           % RF/DC BS - ilog 2009-02-12
 
 par.Mod.f1 = f1;
 par.Mod.f2 = f2;

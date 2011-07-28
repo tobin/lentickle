@@ -18,12 +18,11 @@ par.Length.EX = 3995.032;          % length [m] of the X arm
 par.Length.EY = 3995.001;          % length [m] of the Y arm
 par.Length.PR = lPRC - lmean;      % distance from PR to BS
 
-% Radius of Curvature [m]
-% from http://www.ligo.caltech.edu/~gari/COCAsBuilt.htm
+% Radius of Curvature [m]            from http://www.ligo.caltech.edu/~gari/COCAsBuilt.htm
 par.IX.ROC = 14.76e3;
 par.IY.ROC = 14.52e3;
-par.EX.ROC = 8.73e3;
-par.EY.ROC = 8.72e3;
+par.EX.ROC =  8.73e3;
+par.EY.ROC =  8.72e3;
 par.BS.ROC = -189e3;
 par.PR.ROC = 15.78e3;
 
@@ -54,10 +53,10 @@ par.PR.T = 0.0270;
 
 % AR Surfaces
 par.IX.Rar = 800e-6;
-par.IY.Rar = 80e-6;
+par.IY.Rar =  80e-6;
 par.EX.Rar = 100e-6;
 par.EY.Rar = 100e-6;
-par.BS.Rar = 80e-6;
+par.BS.Rar =  80e-6;
 par.PR.Rar = 100e-6;
 
 % HR Losses
@@ -106,7 +105,7 @@ par.Laser.vArf = vArf;
 par.Laser.Power = par.Pin;
 par.Laser.Wavelength = lambda;
 
-par.ASsplit = 0.03;                % How much power goes to the AS_Q
+par.ASsplit = 1 - 0.972;           % RF/DC BS - ilog 2009-05-11
 
 par.Mod.f1 = f1;
 par.Mod.f2 = f2;
